@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact Form</title>
+  <style>
+    :root{--bg:#f6f8fa;--card:#ffffff;--accent:#2563eb;--muted:#6b7280}
+    *{box-sizing:border-box}
+    body{font-family:Inter, Roboto, "Segoe UI", Arial, sans-serif;background:var(--bg);color:#111;margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+    .card{background:var(--card);width:100%;max-width:720px;border-radius:12px;box-shadow:0 6px 24px rgba(16,24,40,0.06);padding:28px}
+    h1{margin:0 0 12px;font-size:20px}
+    p.lead{margin:0 0 20px;color:var(--muted)}
+    form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .full{grid-column:1/-1}
+    .name-row{display:flex;gap:12px;grid-column:1/-1}
+    .name-row > div{flex:1}
+    label{display:block;font-size:13px;margin-bottom:6px}
+    input,textarea,button,select{font:inherit}
+    input,textarea,select{width:100%;padding:10px 12px;border:1px solid #e6e9ef;border-radius:8px;background:#fff}
+    input:focus,textarea:focus,select:focus{outline:none;box-shadow:0 0 0 4px rgba(37,99,235,0.08);border-color:var(--accent)}
+    .row{display:flex;gap:12px}
+    .muted{color:var(--muted);font-size:13px}
+    .actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;grid-column:1/-1}
+    .action-buttons{display:flex;gap:12px}
+    .checkbox-inline{display:flex;align-items:center;gap:8px;margin:0}
+    .checkbox-inline input{width:auto;padding:0}
+    .btn{padding:10px 14px;border-radius:8px;border:1px solid transparent;cursor:pointer}
+    .btn.primary{background:var(--accent);color:#fff}
+    .btn.ghost{background:transparent;border-color:#e6e9ef;color:#111}
+    @media (max-width:640px){form{grid-template-columns:1fr}.name-row{flex-direction:column}.row{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <center><a href="http://www.irissoftware.com">IRIS</a><h1>  Registration Form</h1></center>
+    <p class="lead">Please fill in your details and click <strong>Submit</strong>. Click <strong>Cancel</strong> to clear the form.</p>
+
+    <form id="contactForm" novalidate>
+      <div class="name-row">
+        <div>
+          <label for="title">Initial</label>
+          <select id="title" name="title">
+            <option value="Miss">Miss</option>
+            <option value="Mr.">Mr.</option>
+            <option value="Mrs.">Mrs.</option>
+          </select>
+        </div>
+        <div>
+          <label for="firstName">First Name</label>
+          <input id="firstName" name="firstName" type="text" autocomplete="given-name" required minlength="2" placeholder="John" />
+        </div>
+        <div>
+          <label for="lastName">Last Name</label>
+          <input id="lastName" name="lastName" type="text" autocomplete="family-name" required minlength="2" placeholder="Doe" />
+        </div>
+      </div>
+
+      <div class="full">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@example.com" />
+      </div>
+
+      <div class="full">
+        <label for="address">Address</label>
+        <textarea id="address" name="address" rows="3" placeholder="Street address, city, state" required></textarea>
+      </div>
+
+      <div>
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+91 98765 43210" pattern="[0-9+\-()\s]{7,}" />
+      </div>
+
+      <div>
+        <label for="zip">Pin Code</label>
+        <input id="zip" name="pincode" type="text" inputmode="numeric" pattern="[0-9A-Za-z\-\s]{3,10}" placeholder="400001" />
+      </div>
+
+      <div class="actions">
+        <label for="companyNotification" class="checkbox-inline">
+          <input id="companyNotification" name="companyNotification" type="checkbox" />
+          Recieve company notification
+        </label>
+        <div class="action-buttons">
+          <button type="button" class="btn ghost" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn primary" id="submitBtn">Confirm</button>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    // Simple client-side validation and submit handler
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Use Constraint Validation API
+      if (!form.checkValidity()){
+        // Find first invalid field and focus
+        const firstInvalid = form.querySelector(':invalid');
+        firstInvalid.reportValidity();
+        firstInvalid.focus();
+        return;
+      }
+
+      // Gather form data
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      // For demo purposes: show the data in an alert and log to console.
+      // Replace this with an AJAX/fetch call to your server endpoint.
+      console.log('Form submitted:', data);
+      alert('Form submitted. Check console for data.');
+      form.reset();
+    });
+
+    // Cancel button clears the form
+    cancelBtn.addEventListener('click', () => {
+      if (confirm('Clear the form?')) {
+        form.reset();
+      }
+    });
+  </script>
+</body>
+</html>

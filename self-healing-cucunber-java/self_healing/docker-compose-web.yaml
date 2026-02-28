@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+
+  postgres-db:
+    image: postgres:15.5-alpine
+    container_name: postgres-db
+    restart: always
+    ports:
+      - "5435:5435"
+    volumes:
+      - ./db/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_DB=self_healing
+      - POSTGRES_USER=self_healing_user
+      - POSTGRES_PASSWORD=password
+    networks:
+      - self_healing
+
+  healenium:
+    image: healenium/hlm-backend:3.4.9
+    container_name: healenium
+    restart: on-failure
+    ports:
+      - "7878:7878"
+    links:
+      - postgres-db
+    environment:
+      - SPRING_POSTGRES_DB=self_healing
+      - SPRING_POSTGRES_SCHEMA=self_healing
+      - SPRING_POSTGRES_USER=self_healing_user
+      - SPRING_POSTGRES_PASSWORD=password
+      - SPRING_POSTGRES_DB_HOST=postgres-db
+      - KEY_SELECTOR_URL=false
+      - COLLECT_METRICS=true
+      - HLM_LOG_LEVEL=info
+    volumes:
+      - ./screenshots/:/screenshots
+      - ./logs/:/logs
+    networks:
+      - self_healing
+
+  selector-imitator:
+    image: healenium/hlm-selector-imitator:1.6
+    container_name: selector-imitator
+    restart: on-failure
+    ports:
+      - "8000:8000"
+    networks:
+      - self_healing
+
+networks:
+  self_healing:
+    name: self_healing
